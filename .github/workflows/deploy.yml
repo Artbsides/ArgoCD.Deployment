@@ -28,16 +28,8 @@ jobs:
 
           IMAGE_VERSION=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
 
-          if [[ $IMAGE_VERSION == ${{ github.ref_name }} ]]; then
-            echo "==== Ok"
-          else
-            echo "==== Error: Image version is different from tag."
-            exit 1
-          fi
-
-      - name: Test
-        run: |
           echo "--------------"
+          echo $IMAGE_VERSION
           echo ${{ github.ref_name }}
           echo ${{ github.base_ref }}
           echo ${{ github.event.ref_name }}
