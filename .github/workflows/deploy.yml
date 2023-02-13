@@ -2,6 +2,10 @@ name: Deploy  ## .
 
 on:
   workflow_call:
+    inputs:
+      app-name:
+        type: string
+        required: false
 
 jobs:
   deploy:
@@ -26,7 +30,7 @@ jobs:
         run: |
           git pull origin ${{ github.event.base_ref }}
 
-          IMAGE_VERSION=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
+          IMAGE_VERSION=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.${{ inputs.app-name }}.//")
 
           if [[ $IMAGE_VERSION == ${{ github.ref_name }} ]]; then
             echo "==== Ok"
@@ -61,7 +65,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: rempeloliveira/public:cart-api.${{ github.ref_name }}
+          tags: rempeloliveira/public:${{ inputs.app-name }}.${{ github.ref_name }}
 
       - name: SetUp ArgoCd
         if: steps.cache.outputs.cache-hit != 'true'
@@ -78,7 +82,7 @@ jobs:
             --password ${{ secrets.ARGOCD_PASSWORD }} \
             --grpc-web
 
-          argocd app create cart-api${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
+          argocd app create ${{ inputs.app-name }}${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
             --repo https://github.com/${{ github.repository }}.git \
             --path .k8s/${{ env.ENVIRONMENT }} \
             --revision ${{ github.ref_name }} \
@@ -88,6 +92,6 @@ jobs:
             --grpc-web \
             --upsert
 
-          argocd app sync cart-api${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
+          argocd app sync ${{ inputs.app-name }}${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
             --server ${{ secrets.ARGOCD_SERVER }} \
             --grpc-web
