@@ -24,9 +24,6 @@ jobs:
 
       - name: Check Deployment Image Version
         run: |
-          git config user.name RempelOliveira
-          git config user.email rempel.oliveira@gmail.com
-
           git pull origin CA-9:CA-9
 
           IMAGE_VERSION=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
