@@ -35,7 +35,6 @@ jobs:
             exit 1
           fi
 
-          echo "----------"
+      - name: Packages Cache
+        run: |
           echo ${{ github.repository }}
-          echo ${{ github.event.repository }}
-          echo "----------"
