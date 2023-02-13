@@ -29,6 +29,6 @@ jobs:
       - name: Check Deployment Image Version
         run: |
           echo "------------"
-          echo "------------"
+          echo ${{ inputs.deploy-file }}
           echo "------------"
 
