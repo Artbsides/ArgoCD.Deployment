@@ -24,8 +24,14 @@ jobs:
 
       - name: Check Deployment Image Version
         run: |
-          IMAGE_VERSION=$(cat https://raw.githubusercontent.com/RempelOliveira/LojaIntegrada.Backend/CA-9/.k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
+          git config user.name RempelOliveira
+          git config user.email rempel.oliveira@gmail.com
+
+          git pull origin CA-9:CA-9
+
+          IMAGE_VERSION=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
           
           echo "------------"
           echo $IMAGE_VERSION
           echo "------------"
+
