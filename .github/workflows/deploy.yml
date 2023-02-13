@@ -24,9 +24,8 @@ jobs:
 
       - name: Check Deployment Image Version
         run: |
-          IMAGE_VERSION=$(cat RempelOliveira/ArgoCD.Deployment/.k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
+          IMAGE_VERSION=$(cat RempelOliveira/LojaIntegrada.Backend/CA-9/.k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
           
           echo "------------"
           echo $IMAGE_VERSION
           echo "------------"
-
