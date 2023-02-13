@@ -2,10 +2,6 @@ name: Deploy  ## .
 
 on:
   workflow_call:
-    inputs:
-      deploy-file:
-        type: string
-        required: true
 
 jobs:
   deploy:
@@ -28,7 +24,9 @@ jobs:
 
       - name: Check Deployment Image Version
         run: |
+          IMAGE_VERSION=$(cat RempelOliveira/ArgoCD.Deployment/.k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.cart-api.//")
+          
           echo "------------"
-          echo ${{ inputs.deploy-file }}
+          echo $IMAGE_VERSION
           echo "------------"
 
