@@ -5,7 +5,7 @@ on:
     inputs:
       app-name:
         type: string
-        required: false
+        required: true
 
 jobs:
   deploy:
