@@ -1,0 +1,11 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: staging-apps
+
+---
+
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: production-apps
