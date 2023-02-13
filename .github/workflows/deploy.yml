@@ -35,8 +35,7 @@ jobs:
           if [[ $IMAGE_VERSION == ${{ github.ref_name }} ]]; then
             echo "==== Ok"
           else
-            echo "==== Error: Image version is different from tag."
-            exit 1
+            exit "==== Error: Image version is different from tag."
           fi
 
       - id: cache
