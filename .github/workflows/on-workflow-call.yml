@@ -1,4 +1,4 @@
-name: Deploy  ## .
+name: Reusable Workflows - on-workflow-call  ## To run, call it from another workflow.
 
 on:
   workflow_call:
