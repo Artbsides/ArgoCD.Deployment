@@ -24,7 +24,10 @@ jobs:
 
       - name: Get Image Name and Version
         run: |
-          IMAGE=$(cat .k8s/staging/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.://")
+          git pull origin \
+            ${{ github.event.base_ref }}
+
+          IMAGE=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.://")
 
           export IMAGE_NAME=$($IMAGE | sed "s/.[0-9].*//i")
           export IMAGE_VERSION=$($IMAGE | sed "s/[a-z_-]*.//i")
@@ -37,8 +40,6 @@ jobs:
 
       - name: Check Deployment Image Version
         run: |
-          git pull origin ${{ github.event.base_ref }}
-
           if [[ "${{ env.IMAGE_VERSION }}" == "${{ github.ref_name }}" ]]; then
             echo "==== Ok"
           else
