@@ -29,8 +29,8 @@ jobs:
 
           IMAGE=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.://")
 
-          export IMAGE_NAME=$("$IMAGE" | sed "s/.[0-9].*//i")
-          export IMAGE_VERSION=$("$IMAGE" | sed "s/[a-z_-]*.//i")
+          export IMAGE_NAME=$(echo $IMAGE | sed "s/.[0-9].*//i")
+          export IMAGE_VERSION=$(echo $IMAGE | sed "s/[a-z_-]*.//i")
 
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
           echo "==== Image Name: $IMAGE_NAME"
