@@ -70,7 +70,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: rempeloliveira/public:${{ env.IMAGE_NAME }}.${{ github.ref_name }}
+          tags: rempeloliveira/public:${{ env.IMAGE_NAME }}.${{ env.IMAGE_VERSION }}
 
       - name: SetUp ArgoCD
         if: steps.cache.outputs.cache-hit != 'true'
@@ -90,7 +90,7 @@ jobs:
           argocd app create ${{ env.IMAGE_NAME }}${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
             --repo https://github.com/${{ github.repository }}.git \
             --path .k8s/${{ env.ENVIRONMENT }} \
-            --revision ${{ github.ref_name }} \
+            --revision ${{ env.IMAGE_VERSION }} \
             --dest-server https://kubernetes.default.svc \
             --dest-namespace ${{ env.ENVIRONMENT }}-apps \
             --server ${{ secrets.ARGOCD_SERVER }} \
