@@ -22,7 +22,7 @@ jobs:
           echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
           echo "==== Deploy to $ENVIRONMENT"
 
-      - name: Get Image Name and Version
+      - name: Get Deployment Image Name and Version
         run: |
           git pull origin \
             ${{ github.event.base_ref }}
