@@ -29,6 +29,9 @@ jobs:
 
           IMAGE=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.://")
 
+          echo $IMAGE
+          exit 1
+
           export IMAGE_NAME=$($IMAGE | sed "s/.[0-9].*//i")
           export IMAGE_VERSION=$($IMAGE | sed "s/[a-z_-]*.//i")
 
