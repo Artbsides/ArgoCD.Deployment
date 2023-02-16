@@ -24,7 +24,7 @@ help:
 brew:  ## Install/Uninstall brew package manager. action=install|uninstall
 ifeq ("$(action)", "install")
 	@sudo apt update && \
-	  sudo apt-get install build-essential curl file git
+	  sudo apt install build-essential curl file git
 
 	@/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" && \
 	  echo -e '\neval $$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> ~/.profile
@@ -48,8 +48,6 @@ dependencies:  ## Install dependencies
 	@brew install argocd
 	@brew install minikube
 	@brew install act
-
-	@sudo apt install ngrok
 
 minikube:  ## Start/Stop minikube. action=start|stop
 ifeq ("$(action)", "start")
@@ -136,14 +134,8 @@ argocd-password:  ## Change argocd login password
 argocd-cluster:  ## Apply argocd cluster
 	@argocd cluster add "$$(kubectl config get-contexts -o name)" --in-cluster
 
-ngrok-config:  ## Config ngrok token
-	@ngrok config add-authtoken 2L6Fe92tcxWJVLGBkS94mK2I0oT_3WLLrRXCUM6bSDSpnbUqL
-
-ngrok-tunnel:  ## Start ngrok tunnel
-	@ngrok http 443
-
 app-namespaces:  ## Create staging and production app namespaces
-	@kubectl apply -f App/namespaces.yaml
+	@kubectl apply -f Apps/namespaces.yaml
 
 
 %:
