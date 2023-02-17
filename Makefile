@@ -45,6 +45,7 @@ endif
 
 dependencies:  ## Install dependencies
 	@brew install sops
+	@brew install age
 	@brew install argocd
 	@brew install minikube
 	@brew install act
@@ -77,7 +78,7 @@ ifeq ("$(action)", "install")
 	  kubectl apply -n argocd -f ArgoCD/dashboard.yaml
 
 	@echo
-	@echo "==== Wait until all pods are up before run gpg-secrets"
+	@echo "==== Wait until all pods are up before run age-secrets"
 
 else ifeq ("$(action)", "uninstall")
 	@kubectl delete -n argocd -f ArgoCD/dashboard.yaml && \
@@ -87,39 +88,26 @@ else
 	@echo "==== Action not found"
 endif
 
-gpg-secrets:  ## Create and export gpg secrets.
-	@GPG_NAME="$$(kubectl config get-contexts -o name)"
-	@GPG_COMMENT="gpg secrets"
+age-secrets:  ## Create and export age secrets. complete=true (default: false)
+ifneq ("$(complete)", "true")
+	@age-keygen -o sops-age.txt
 
-	@gpg --batch --full-generate-key << EOF
-	%no-protection
-	Key-Type: 1
-	Key-Length: 4096
-	Subkey-Type: 1
-	Subkey-Length: 4096
-	Expire-Date: 0
-	Name-Real: $$GPG_NAME
-	Name-Comment: $$GPG_COMMENT
-	Name-Email: rempel.oliveira@gmail.com
-	EOF
+endif
 
-	@GPG_ID="$$(gpg --list-secret-keys $$(kubectl config get-contexts -o name) | sed -n 2p | xargs)"
-
-	@gpg --export-secret-keys --armor $$GPG_ID |
-	  kubectl create secret generic sops-gpg --namespace=argocd --from-file=sops.asc=/dev/stdin
+	@cat sops-age.txt |
+	  kubectl create secret generic sops-age --namespace=argocd --from-file=sops-age.txt=/dev/stdin
 
 	@echo
 	@echo "==== Ready to run argocd-patches"
 
 argocd-patches:  ## Apply custom confs to argocd
-	@kubectl apply -n argocd -f ArgoCD/configmap.yaml && \
-	  kubectl apply -n argocd -f ArgoCD/roles.yaml
+	@kubectl apply -n argocd -f ArgoCD/configmap.yaml
+	@kubectl apply -n argocd -f ArgoCD/roles.yaml
 
-	@kubectl patch deployment argocd-repo-server \
-	  -n argocd --patch-file ArgoCD/deployment-gpg.yaml
+	@kubectl patch deployment argocd-repo-server -n argocd \
+	  --patch-file ArgoCD/deployment-age.yaml
 
-	@kubectl patch svc argocd-server \
-	  -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+	@kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
 argocd-token:  ## Show argocd login token
 	@kubectl get secret argocd-initial-admin-secret \
@@ -134,8 +122,16 @@ argocd-password:  ## Change argocd login password
 argocd-cluster:  ## Apply argocd cluster
 	@argocd cluster add "$$(kubectl config get-contexts -o name)" --in-cluster
 
-app-namespaces:  ## Create staging and production app namespaces
+namespaces:  ## Install/Uninstall staging and production namespaces. action=install|uninstall
+ifeq ("$(action)", "install")
 	@kubectl apply -f Apps/namespaces.yaml
+
+else ifeq ("$(action)", "uninstall")
+	@kubectl delete -f Apps/namespaces.yaml
+
+else
+	@echo "==== Type not found"
+endif
 
 
 %:

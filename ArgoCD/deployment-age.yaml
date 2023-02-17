@@ -18,17 +18,6 @@ spec:
           volumeMounts:
             - name: custom-tools
               mountPath: /custom-tools
-        - name: import-gpg-key
-          image: argoproj/argocd:v2.5.8
-          command: ["gpg", "--import", "/sops-gpg/sops.asc"]
-          env:
-            - name: GNUPGHOME
-              value: /gnupg-home/.gnupg
-          volumeMounts:
-            - name: sops-gpg
-              mountPath: /sops-gpg
-            - name: gnupg-home
-              mountPath: /gnupg-home
       containers:
         - name: argocd-repo-server
           volumeMounts:
@@ -38,19 +27,19 @@ spec:
             - name: custom-tools
               subPath: ksops
               mountPath: /.config/kustomize/plugin/viaduct.ai/v1/ksops/ksops
-            - name: gnupg-home
-              subPath: .gnupg
-              mountPath: /home/argocd/.gnupg
+            - name: sops-age
+              subPath: sops-age.txt
+              mountPath: /home/argocd/.age/sops-age.txt
           env:
             - name: XDG_CONFIG_HOME
               value: /.config
-            - name: GNUPGHOME
-              value: /home/argocd/.gnupg
+            - name: SOPS_AGE_KEY_FILE
+              value: /home/argocd/.age/sops-age.txt
       volumes:
         - name: custom-tools
           emptyDir: {}
-        - name: gnupg-home
+        - name: age-home
           emptyDir: {}
-        - name: sops-gpg
+        - name: sops-age
           secret:
-            secretName: sops-gpg
+            secretName: sops-age
