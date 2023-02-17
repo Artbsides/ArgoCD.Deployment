@@ -44,19 +44,23 @@ else
 endif
 
 dependencies:  ## Install dependencies
-	@brew install sops
 	@brew install age
+	@brew install sops
 	@brew install argocd
 	@brew install minikube
 	@brew install act
 
-minikube:  ## Start/Stop minikube. action=start|stop
+minikube:  ## Start/Stop/Delete  minikube. action=start|stop|delete
 ifeq ("$(action)", "start")
 	@sudo chmod 666 /var/run/docker.sock && \
 	  minikube start --cpus 4 --memory 8g --driver docker --container-runtime containerd --cni bridge
 
 else ifeq ("$(action)", "stop")
 	@minikube stop
+
+else ifeq ("$(action)", "delete")
+	@minikube delete
+
 else
 	@echo "==== Action not found"
 endif
@@ -66,9 +70,6 @@ minikube-dashboard:  ## Start minikube dashboard
 
 minikube-tunnel:  ## Start minikube tunnel
 	@minikube tunnel
-
-minikube-delete:  ## Delete minikube
-	@minikube stop
 
 argocd: -B  ## Install/Uninstall argocd. action=install|uninstall
 ifeq ("$(action)", "install")
