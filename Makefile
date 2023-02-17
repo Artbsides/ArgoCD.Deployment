@@ -90,7 +90,7 @@ else
 endif
 
 age-secrets:  ## Create and export age secrets. complete=true (default: false)
-ifneq ("$(complete)", "true")
+ifeq ("$(complete)", "true")
 	@age-keygen -o sops-age.txt
 
 endif
