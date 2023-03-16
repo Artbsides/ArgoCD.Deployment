@@ -37,7 +37,7 @@ jobs:
 
       - name: Check Deployment Image Version
         run: |
-          if [ "${{ env.IMAGE_VERSION }}" == "${{ github.ref_name }}" ]; then
+          if [ "${{ env.IMAGE_VERSION }}" = "${{ github.ref_name }}" ]; then
             echo "==== Ok"
           else
             echo "==== Image version is different from tag."
