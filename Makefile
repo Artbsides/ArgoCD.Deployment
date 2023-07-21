@@ -50,10 +50,10 @@ dependencies:  ## Install dependencies
 	@brew install minikube
 	@brew install act
 
-minikube:  ## Start/Stop/Delete  minikube. action=start|stop|delete
+minikube:  ## Start/Stop/Delete minikube. action=start|stop|delete cpus=[0-9] memory=[0-9]g
 ifeq ("$(action)", "start")
-	@sudo chmod 666 /var/run/docker.sock && \
-	  minikube start --cpus 4 --memory 8g --driver docker --container-runtime containerd --cni bridge
+	@sudo chmod 666 /var/run/docker.sock && minikube start \
+		--cpus $(if $(cpus), $(cpus), 4) --memory $(if $(memory), $(memory), 8g) --driver docker --container-runtime containerd --cni bridge
 
 else ifeq ("$(action)", "stop")
 	@minikube stop
@@ -66,7 +66,7 @@ else
 endif
 
 minikube-dashboard:  ## Start minikube dashboard
-	@minikube dashboard
+	@minikube dashboard --url false
 
 minikube-tunnel:  ## Start minikube tunnel
 	@minikube tunnel
@@ -110,6 +110,9 @@ argocd-patches:  ## Apply custom confs to argocd
 
 	@kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
+	@echo
+	@echo "==== Wait until all pods are up before continue"
+
 argocd-token:  ## Show argocd login token
 	@kubectl get secret argocd-initial-admin-secret \
 	  -n argocd -o jsonpath="{.data.password}" | base64 -d; echo
@@ -131,7 +134,7 @@ else ifeq ("$(action)", "uninstall")
 	@kubectl delete -f Apps/namespaces.yaml
 
 else
-	@echo "==== Type not found"
+	@echo "==== Action not found"
 endif
 
 
