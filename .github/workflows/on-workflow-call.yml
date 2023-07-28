@@ -73,7 +73,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}.${{ env.IMAGE_VERSION }}
-          labels: myLabel
+          labels: ${{ steps.metadata.outputs.labels }}
 
       - name: SetUp ArgoCD
         if: steps.cache.outputs.cache-hit != 'true'
