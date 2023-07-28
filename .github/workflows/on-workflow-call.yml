@@ -65,7 +65,7 @@ jobs:
         name: Extract MetaData for Docker
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/${{ env.IMAGE_NAME }}
+          images: ghcr.io/${{ github.repository }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
