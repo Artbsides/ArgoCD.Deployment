@@ -63,7 +63,7 @@ jobs:
 
       - id: metadata
         name: Extract MetaData for Docker
-        uses: docker/metadata-action@4
+        uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ env.IMAGE_NAME }}
 
