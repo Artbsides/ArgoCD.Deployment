@@ -61,19 +61,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract MetaData for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      - id: metadata
+        name: Extract MetaData for Docker
+        uses: docker/metadata-action@4
         with:
-          images: ghcr.io/${{ env.IMAGE_NAME }}.${{ env.IMAGE_VERSION }}
+          images: ghcr.io/${{ env.IMAGE_NAME }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
 
       - name: SetUp ArgoCD
         if: steps.cache.outputs.cache-hit != 'true'
