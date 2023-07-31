@@ -90,7 +90,7 @@ jobs:
             --password ${{ secrets.ARGOCD_PASSWORD }} \
             --grpc-web
           
-          argocd repo add ghcr.io/artbsides/wishlist-api \
+          argocd repo add https://github.com/Artbsides/WishlistApi \
             --username ${{ github.actor }} \
             --password ${{ secrets.GITHUB_TOKEN }}
 
