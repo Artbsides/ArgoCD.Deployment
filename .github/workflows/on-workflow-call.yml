@@ -89,6 +89,10 @@ jobs:
             --username ${{ secrets.ARGOCD_USERNAME }} \
             --password ${{ secrets.ARGOCD_PASSWORD }} \
             --grpc-web
+          
+          argocd repo add ghcr.io/artbsides/wishlist-api \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }}
 
           argocd app create ${{ env.IMAGE_NAME }}${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
             --repo https://github.com/${{ github.repository }}.git \
