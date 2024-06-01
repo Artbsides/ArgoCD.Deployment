@@ -99,4 +99,5 @@ jobs:
 
           argocd app sync ${{ env.IMAGE_NAME }}${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
             --server ${{ secrets.ARGOCD_SERVER }} \
+            --sync-option force \
             --grpc-web

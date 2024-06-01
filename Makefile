@@ -53,7 +53,7 @@ dependencies:  ## Install dependencies
 minikube:  ## Start/Stop/Delete  minikube. action=start|stop|delete
 ifeq ("$(action)", "start")
 	@sudo chmod 666 /var/run/docker.sock && \
-	  minikube start --cpus 4 --memory 8g --driver docker --container-runtime containerd --cni bridge
+	  minikube start --cpus 4 --memory 8g --driver docker --container-runtime containerd --cni bridge --kubernetes-version=v1.30.0
 
 else ifeq ("$(action)", "stop")
 	@minikube stop
@@ -131,7 +131,7 @@ else ifeq ("$(action)", "uninstall")
 	@kubectl delete -f Apps/namespaces.yaml
 
 else
-	@echo "==== Type not found"
+	@echo "==== Action not found"
 endif
 
 
