@@ -1,4 +1,4 @@
-name: Reusable Workflows - on-workflow-call  ## To run, call it from another workflow.
+name: Reusable Workflows - OnWorkflowCall  ## To run, call it from another workflow.
 
 on:
   workflow_call:
