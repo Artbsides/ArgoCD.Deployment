@@ -1,4 +1,4 @@
-name: Reusable Workflows - on-workflow-call  ## To run, call it from another workflow.
+name: Reusable Workflows - OnWorkflowCall  ## To run, call it from another workflow.
 
 on:
   workflow_call:
@@ -99,5 +99,5 @@ jobs:
 
           argocd app sync ${{ env.IMAGE_NAME }}${{ env.ENVIRONMENT == 'staging' && '-staging' || '' }} \
             --server ${{ secrets.ARGOCD_SERVER }} \
-            --sync-option force \
-            --grpc-web
+            --grpc-web \
+            --force
