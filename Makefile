@@ -1,5 +1,6 @@
 .ONESHELL:
 
+
 SHELL=/bin/bash
 PYTHON=/usr/bin/python3
 
@@ -53,9 +54,9 @@ dependencies:  ## Install dependencies
 minikube:  ## Start/Stop/Delete minikube. action=start|stop|delete cpus=[0-9] memory=[0-9]g
 ifeq ("$(action)", "start")
 	@sudo chmod 666 /var/run/docker.sock && minikube start \
-	  	--cpus $(if $(cpus), $(cpus), 4) --memory $(if $(memory), $(memory), 8g) --driver docker --container-runtime containerd --cni bridge --kubernetes-version=v1.30.0
+	  	--cpus $(if $(cpus), $(cpus), 4) --memory $(if $(memory), $(memory), 8g) --driver docker --container-runtime containerd --cni bridge --kubernetes-version=v1.34.0
 
-	@sudo sed -i 's|/home/user/|../|g' ~/.kube/config
+	@make minikube-ssl
 
 else ifeq ("$(action)", "stop")
 	@minikube stop
@@ -66,6 +67,9 @@ else ifeq ("$(action)", "delete")
 else
 	@echo "==== Action not found"
 endif
+
+minikube-ssl: ## Set minikube ssl file paths
+	@cp ~/.kube/config ~/.kube/config-lens && sed -i "s|$$HOME|..|g" ~/.kube/config-lens
 
 minikube-dashboard:  ## Start minikube dashboard
 	@minikube dashboard --url false
