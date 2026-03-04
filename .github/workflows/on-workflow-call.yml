@@ -24,7 +24,13 @@ jobs:
 
       - name: Get Deployment Image Name and Version
         run: |
-          IMAGE=$(cat .k8s/${{ env.ENVIRONMENT }}/deployment.yml | awk "/image:/ {print $2}" | sed "s/.*.://")
+          if [ -f .k8s/${{ env.ENVIRONMENT }}/deployment.yml ]; then
+            IMAGE_FILE=".k8s/${{ env.ENVIRONMENT }}/deployment.yml"
+          else
+            IMAGE_FILE=".infrastructure/kubernetes/${{ env.ENVIRONMENT }}/deployments/app.yml"
+          fi
+
+          IMAGE=$(cat $IMAGE_FILE | awk "/image:/ {print $2}" | sed "s/.*.://")
 
           export IMAGE_NAME=$(echo $IMAGE | sed "s/.[0-9].*//i")
           export IMAGE_VERSION=$(echo $IMAGE | sed "s/[a-z_-]*.//i")
